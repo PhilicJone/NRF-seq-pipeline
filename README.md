@@ -11,25 +11,11 @@ Only uniquely mapped reads are retained for downstream analysis.
 Gene‑level raw counts: featureCounts (exon‑based, strand‑specific).
 Transcript‑level expression: StringTie (TPM).
 Coverage tracks: bamCoverage (deepTools, bin size = 50, CPM normalization) produces BigWig files for visualization in IGV.
-5. Candidate tneRNA Screening – Two Complementary Strategies
-Strategy A: Bin‑wise Pearson Correlation Coefficient (PCC) Screening
-Transcripts (rather than genes) are split into consecutive 500‑bp bins. Transcripts with fewer than three bins are excluded.
-Bin‑wise read counts are extracted using computeMatrix (deepTools).
-Intra‑group PCC​ is calculated between replicates (untreated nuclear vs. untreated nuclear; RNase A‑treated vs. RNase A‑treated). Only transcripts with intra‑group PCC > 0.8 are retained.
-Inter‑group PCC​ is calculated between RNase A‑treated and untreated nuclear samples. Candidates must have inter‑group PCC lower than the corresponding intra‑group PCC.
-Digested proportion: Within each transcript, bins are ranked by read count. A bin is called “RNase A‑sensitive” if its rank drops ≥30% after RNase A treatment. The digested proportion = sensitive bins / total bins.
-Final ranking integrates a high rank in the background‑corrected bin‑wise PCC analysis.
-Strategy B: Stringent Screen Based on Nuclear Enrichment and Segmental Digestion
-Nuclear enrichment: Differential expression (nuclear vs. cytoplasmic) is computed with DESeq2. Genes with log2FC(Nuc/Cyto) ≥ 4 and adjusted p‑value < 0.05 are defined as nuclear‑enriched.
-Length filter: Only nuclear‑enriched RNAs longer than 10 kb are retained.
-Segmental digestion detection:
-Coverage tracks are generated without​ sequencing‑depth normalization (bamCoverage --normalizeUsing None) to preserve digestion‑specific changes.
-An average untreated nuclear coverage track serves as baseline.
-bamCompare computes log2‑ratio tracks for each sample (RNase A‑treated, low‑dose RNase A, untreated nuclear) against the baseline.
-Significant positive/negative change thresholds are derived from negative‑control samples (99.5th percentile of max/min log2‑ratio).
-Three metrics are calculated per RNA:
-Total change ratio​ (fraction of transcript length covered by significant changes)
-Maximum negative ratio​ (largest contiguous negative‑change region / transcript length)
-Maximum positive ratio​ (largest contiguous positive‑change region / transcript length)
-A sample is classified as tneRNA‑like​ if: total change ratio > 0.6, maximum negative ratio > 0.1, and maximum positive ratio > 0.001.
-An RNA is designated a candidate tneRNA​ only when RNase A‑treated samples show a tneRNA‑like pattern, while all control samples do not.
+
+5. Candidate tneRNA Screening – Bin‑wise Pearson Correlation Coefficient (PCC) Screening
+a. Transcripts (rather than genes) are split into consecutive 500‑bp bins. Transcripts with fewer than three bins are excluded.
+b. Bin‑wise read counts are extracted using computeMatrix (deepTools).
+c. Intra‑group PCC​ is calculated between replicates (untreated nuclear vs. untreated nuclear; RNase A‑treated vs. RNase A‑treated). Only transcripts with intra‑group PCC > 0.8 are retained.
+d. Inter‑group PCC​ is calculated between RNase A‑treated and untreated nuclear samples. Candidates must have inter‑group PCC lower than the corresponding intra‑group PCC.
+e. Digested proportion: Within each transcript, bins are ranked by read count. A bin is called “RNase A‑sensitive” if its rank drops ≥30% after RNase A treatment. The digested proportion = sensitive bins / total bins.
+f. Final ranking integrates a high rank in the background‑corrected bin‑wise PCC analysis.
