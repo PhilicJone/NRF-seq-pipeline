@@ -13,7 +13,7 @@ Transcript‑level expression: StringTie (TPM).
 Coverage tracks: bamCoverage (deepTools, bin size = 50, CPM normalization) produces BigWig files for visualization in IGV.
 
 5. Candidate tneRNA Screening – Bin‑wise Pearson Correlation Coefficient (PCC) Screening
-a. Transcripts (rather than genes) are split into consecutive 500‑bp bins. Transcripts with fewer than three bins are excluded.
+a. Transcripts (rather than genes) are split into 20 bins. Transcripts with fewer than three bins are excluded.
 b. Bin‑wise read counts are extracted using computeMatrix (deepTools).
 c. Intra‑group PCC​ is calculated between replicates (untreated nuclear vs. untreated nuclear; RNase A‑treated vs. RNase A‑treated). Only transcripts with intra‑group PCC > 0.8 are retained.
 d. Inter‑group PCC​ is calculated between RNase A‑treated and untreated nuclear samples. Candidates must have inter‑group PCC lower than the corresponding intra‑group PCC.
