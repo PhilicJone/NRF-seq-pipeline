@@ -8,9 +8,21 @@ A second FastQC run confirms clean reads.
 Clean reads are aligned to the GENCODE GRCh38.v49​ reference genome using STAR​ (two‑pass mode for variant calling).
 Only uniquely mapped reads are retained for downstream analysis.
 4. Quantification
-Gene‑level raw counts: featureCounts (exon‑based, strand‑specific).
+Gene‑level raw counts: featureCounts.
 Transcript‑level expression: StringTie (TPM).
 Coverage tracks: bamCoverage (deepTools, bin size = 50, CPM normalization) produces BigWig files for visualization in IGV.
+Gene body signal matrix: computeMatrix scale-regions (deepTools, region body length = 2000, bin size = 100, skip zeros) computes a matrix of average scores per bin across gene bodies from RNA-seq BigWig files.
+
+computeMatrix scale-regions --numberOfProcessors 30 \
+        -S $InPATH/Sample1_no_Treatment.bw\
+        $InPATH/Sample2_no_Treatment.bw \
+        $InPATH/Sample3_RNaseA_Treat.bw \
+        $InPATH/Sample4_RNaseA_Treat.bw \
+        -R GeneTranscript.bed \
+        -a 0 -b 0 --regionBodyLength 2000 \
+        --binSize 100 \
+        --samplesLabel noTreat1 noTreat2 RNase1 RNase2 \
+        --skipZeros -o $OutPATH/Output.mat.gz
 
 5. Candidate tneRNA Screening – Bin‑wise Pearson Correlation Coefficient (PCC) Screening
 a. Transcripts (rather than genes) are split into 20 bins. Transcripts with fewer than three bins are excluded.
